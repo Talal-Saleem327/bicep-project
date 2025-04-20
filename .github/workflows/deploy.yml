@@ -24,4 +24,6 @@ jobs:
         subscriptionId: ${{ fromJSON(secrets.AZURE_CREDENTIALS).subscriptionId }}
         resourceGroupName: BicepRG
         template: ./main.bicep
+        failOnStdErr: false
+
 
