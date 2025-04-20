@@ -87,56 +87,92 @@ module storage2 'modules/storage.bicep' = {
   }
 }
 
-// --- Define existing resources for diagnostics ---
-resource vm1res 'Microsoft.Compute/virtualMachines@2021-11-01' existing = {
-  name: 'vmVNet1'
-}
+// --- DIAGNOSTIC SETTINGS inline here ---
 
-resource vm2res 'Microsoft.Compute/virtualMachines@2021-11-01' existing = {
-  name: 'vmVNet2'
-}
-
-resource stor1res 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
-  name: storage1Name
-}
-
-resource stor2res 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
-  name: storage2Name
-}
-
-// --- Diagnostic Settings ---
-module vm1Diag 'modules/diagnostic.bicep' = {
-  name: 'diag-vm1'
-  scope: vm1res
-  params: {
-    name: 'vm1-ds'
-    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'vm1-ds'
+  scope: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet1')
+  properties: {
+    workspaceId: monitor.outputs.workspaceId
+    logs: [
+      {
+        category: 'Administrative'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
   }
 }
 
-module vm2Diag 'modules/diagnostic.bicep' = {
-  name: 'diag-vm2'
-  scope: vm2res
-  params: {
-    name: 'vm2-ds'
-    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'vm2-ds'
+  scope: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet2')
+  properties: {
+    workspaceId: monitor.outputs.workspaceId
+    logs: [
+      {
+        category: 'Administrative'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
   }
 }
 
-module storage1Diag 'modules/diagnostic.bicep' = {
-  name: 'diag-storage1'
-  scope: stor1res
-  params: {
-    name: 'stor1-ds'
-    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'stor1-ds'
+  scope: resourceId('Microsoft.Storage/storageAccounts', storage1Name)
+  properties: {
+    workspaceId: monitor.outputs.workspaceId
+    logs: [
+      {
+        category: 'StorageRead'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
+    metrics: [
+      {
+        category: 'Transaction'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
   }
 }
 
-module storage2Diag 'modules/diagnostic.bicep' = {
-  name: 'diag-storage2'
-  scope: stor2res
-  params: {
-    name: 'stor2-ds'
-    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'stor2-ds'
+  scope: resourceId('Microsoft.Storage/storageAccounts', storage2Name)
+  properties: {
+    workspaceId: monitor.outputs.workspaceId
+    logs: [
+      {
+        category: 'StorageRead'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
+    metrics: [
+      {
+        category: 'Transaction'
+        enabled: true
+        retentionPolicy: { enabled: false, days: 0 }
+      }
+    ]
   }
 }
