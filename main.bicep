@@ -104,23 +104,30 @@ resource stor2 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: storage2Name
 }
 
+// For VMs
 resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'vm1-ds'
-  scope: vmVNet1
+  scope: vm1
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'Syslog'
+        category: 'VMPerformanceCounters'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
     metrics: [
       {
         category: 'AllMetrics'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
   }
@@ -128,43 +135,56 @@ resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
 
 resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'vm2-ds'
-  scope: vmVNet2
+  scope: vm2
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'Syslog'
+        category: 'VMPerformanceCounters'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
     metrics: [
       {
         category: 'AllMetrics'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
   }
 }
 
+// For Storage Accounts
 resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'stor1-ds'
-  scope: stor1
+  scope: storage1
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageWrite'
+        category: 'StorageServicesLogs'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
     metrics: [
       {
         category: 'Transaction'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
   }
@@ -172,22 +192,29 @@ resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
 
 resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'stor2-ds'
-  scope: stor2
+  scope: storage2
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageWrite'
+        category: 'StorageServicesLogs'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
     metrics: [
       {
         category: 'Transaction'
         enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
       }
     ]
   }
 }
+
