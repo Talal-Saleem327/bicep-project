@@ -4,7 +4,7 @@ param logAnalyticsWorkspaceId string
 
 resource diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: name
-  scope: resource(targetResourceId)
+  scope: targetResourceId
   properties: {
     workspaceId: logAnalyticsWorkspaceId
     logs: [
