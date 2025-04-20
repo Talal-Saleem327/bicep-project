@@ -16,7 +16,7 @@ module vnet1 'modules/vnet.bicep' = {
   }
 }
 
-// --- VNET 2 ---
+// --- VNET 2 (Updated) ---
 module vnet2 'modules/vnet.bicep' = {
   name: 'vnet2Deploy'
   params: {
@@ -30,7 +30,7 @@ module vnet2 'modules/vnet.bicep' = {
   }
 }
 
-// --- VNet Peering ---
+// --- VNet Peering (New) ---
 module peer 'modules/vnet-peering.bicep' = {
   name: 'vnetPeering'
   params: {
@@ -49,7 +49,7 @@ module monitor 'modules/monitor.bicep' = {
 }
 
 // --- VMs ---
-module vm1Mod 'modules/vm.bicep' = {
+module vm1 'modules/vm.bicep' = {
   name: 'vm1Deploy'
   params: {
     name: 'vmVNet1'
@@ -58,7 +58,7 @@ module vm1Mod 'modules/vm.bicep' = {
   }
 }
 
-module vm2Mod 'modules/vm.bicep' = {
+module vm2 'modules/vm.bicep' = {
   name: 'vm2Deploy'
   params: {
     name: 'vmVNet2'
@@ -68,130 +68,19 @@ module vm2Mod 'modules/vm.bicep' = {
 }
 
 // --- Storage Accounts ---
-var storage1Name = 'stor1${uniqueString(resourceGroup().id)}'
-var storage2Name = 'stor2${uniqueString(resourceGroup().id)}'
-
-module storage1Mod 'modules/storage.bicep' = {
+module storage1 'modules/storage.bicep' = {
   name: 'storage1Deploy'
   params: {
-    name: storage1Name
+    name: 'storvnet1${uniqueString('prefix1${resourceGroup().id}')}' 
     location: location
   }
 }
 
-module storage2Mod 'modules/storage.bicep' = {
+module storage2 'modules/storage.bicep' = {
   name: 'storage2Deploy'
   params: {
-    name: storage2Name
+    name: 'storvnet2${uniqueString('prefix2${resourceGroup().id}')}' 
     location: location
   }
 }
 
-// --- Declare existing resources for diagnostics ---
-resource vmVNet1 'Microsoft.Compute/virtualMachines@2021-07-01' existing = {
-  name: 'vmVNet1'
-}
-
-resource vmVNet2 'Microsoft.Compute/virtualMachines@2021-07-01' existing = {
-  name: 'vmVNet2'
-}
-
-resource stor1 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: storage1Name
-}
-
-resource stor2 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
-  name: storage2Name
-}
-
-// --- Diagnostic Settings for VM1 ---
-resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'vm1-ds'
-  scope: vmVNet1
-  properties: {
-    workspaceId: monitor.outputs.workspaceId
-    logs: [
-      {
-        category: 'GuestOS'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-  }
-}
-
-// --- Diagnostic Settings for VM2 ---
-resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'vm2-ds'
-  scope: vmVNet2
-  properties: {
-    workspaceId: monitor.outputs.workspaceId
-    logs: [
-      {
-        category: 'GuestOS'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-  }
-}
-
-// --- Diagnostic Settings for Storage1 ---
-resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'stor1-ds'
-  scope: stor1
-  properties: {
-    workspaceId: monitor.outputs.workspaceId
-    logs: [
-      {
-        category: 'StorageBlobLogs'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-    metrics: [
-      {
-        category: 'Transaction'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-  }
-}
-
-// --- Diagnostic Settings for Storage2 ---
-resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'stor2-ds'
-  scope: stor2
-  properties: {
-    workspaceId: monitor.outputs.workspaceId
-    logs: [
-      {
-        category: 'StorageBlobLogs'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-    metrics: [
-      {
-        category: 'Transaction'
-        enabled: true
-        retentionPolicy: { enabled: false, days: 0 }
-      }
-    ]
-  }
-}
