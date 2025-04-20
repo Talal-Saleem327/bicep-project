@@ -10,8 +10,8 @@ module vnet1 'modules/vnet.bicep' = {
     location: location
     addressPrefix: '10.0.0.0/16'
     subnets: [
-      { name: 'infra'; prefix: '10.0.1.0/24' }
-      { name: 'storage'; prefix: '10.0.2.0/24' }
+      { name: 'infra', prefix: '10.0.1.0/24' }
+      { name: 'storage', prefix: '10.0.2.0/24' }
     ]
   }
 }
@@ -24,8 +24,8 @@ module vnet2 'modules/vnet.bicep' = {
     location: location
     addressPrefix: '10.1.0.0/16'
     subnets: [
-      { name: 'infra'; prefix: '10.1.1.0/24' }
-      { name: 'storage'; prefix: '10.1.2.0/24' }
+      { name: 'infra', prefix: '10.1.1.0/24' }
+      { name: 'storage', prefix: '10.1.2.0/24' }
     ]
   }
 }
