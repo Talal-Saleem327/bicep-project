@@ -8,6 +8,7 @@ module vnet1 'modules/vnet.bicep' = {
   params: {
     name: 'VNet1'
     location: location
+    addressPrefix: '10.0.0.0/16'
     subnets: [
       {
         name: 'infra'
@@ -21,12 +22,14 @@ module vnet1 'modules/vnet.bicep' = {
   }
 }
 
+
 // Create second virtual network with one subnet
 module vnet2 'modules/vnet.bicep' = {
   name: 'vnet2Deploy'
   params: {
     name: 'VNet2'
     location: location
+    addressPrefix: '10.1.0.0/16'
     subnets: [
       {
         name: 'web'
@@ -35,6 +38,7 @@ module vnet2 'modules/vnet.bicep' = {
     ]
   }
 }
+
 
 // Storage Account
 module storage 'modules/storage.bicep' = {
