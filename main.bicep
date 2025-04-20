@@ -87,11 +87,28 @@ module storage2 'modules/storage.bicep' = {
   }
 }
 
-// --- DIAGNOSTIC SETTINGS inline here ---
+// --- Declare existing resources for diagnostics ---
+resource vmVNet1 'Microsoft.Compute/virtualMachines@2021-07-01' existing = {
+  name: 'vmVNet1'
+}
+
+resource vmVNet2 'Microsoft.Compute/virtualMachines@2021-07-01' existing = {
+  name: 'vmVNet2'
+}
+
+resource stor1 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: storage1Name
+}
+
+resource stor2 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
+  name: storage2Name
+}
+
+// --- Diagnostic Settings ---
 
 resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'vm1-ds'
-  scope: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet1')
+  scope: vmVNet1
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
@@ -113,7 +130,7 @@ resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
 
 resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'vm2-ds'
-  scope: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet2')
+  scope: vmVNet2
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
@@ -135,7 +152,7 @@ resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
 
 resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'stor1-ds'
-  scope: resourceId('Microsoft.Storage/storageAccounts', storage1Name)
+  scope: stor1
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
@@ -157,7 +174,7 @@ resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
 
 resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'stor2-ds'
-  scope: resourceId('Microsoft.Storage/storageAccounts', storage2Name)
+  scope: stor2
   properties: {
     workspaceId: monitor.outputs.workspaceId
     logs: [
