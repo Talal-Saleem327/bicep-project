@@ -71,7 +71,7 @@ module vm2 'modules/vm.bicep' = {
 module storage1 'modules/storage.bicep' = {
   name: 'storage1Deploy'
   params: {
-    name: 'storagevnet1${uniqueString(resourceGroup().id)}'
+    name: 'storvnet1${uniqueString('1' + resourceGroup().id)}'
     location: location
   }
 }
@@ -79,7 +79,7 @@ module storage1 'modules/storage.bicep' = {
 module storage2 'modules/storage.bicep' = {
   name: 'storage2Deploy'
   params: {
-    name: 'storagevnet2${uniqueString(resourceGroup().id)}'
+    name: 'storvnet2${uniqueString('2' + resourceGroup().id)}'
     location: location
   }
 }
