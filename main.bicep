@@ -82,3 +82,38 @@ module storage2 'modules/storage.bicep' = {
     location: location
   }
 }
+module vm1Diag 'modules/diagnostic.bicep' = {
+  name: 'diag-vm1'
+  params: {
+    name: 'vm1-ds'
+    targetResourceId: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet1')
+    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+  }
+}
+
+module vm2Diag 'modules/diagnostic.bicep' = {
+  name: 'diag-vm2'
+  params: {
+    name: 'vm2-ds'
+    targetResourceId: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet2')
+    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+  }
+}
+
+module storage1Diag 'modules/diagnostic.bicep' = {
+  name: 'diag-storage1'
+  params: {
+    name: 'stor1-ds'
+    targetResourceId: storage1.outputs.storageId
+    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+  }
+}
+
+module storage2Diag 'modules/diagnostic.bicep' = {
+  name: 'diag-storage2'
+  params: {
+    name: 'stor2-ds'
+    targetResourceId: storage2.outputs.storageId
+    logAnalyticsWorkspaceId: monitor.outputs.workspaceId
+  }
+}
