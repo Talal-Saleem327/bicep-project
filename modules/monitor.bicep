@@ -11,3 +11,5 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
     retentionInDays: 30
   }
 }
+
+output workspaceId string = logAnalytics.id
