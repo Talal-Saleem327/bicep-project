@@ -104,8 +104,6 @@ resource stor2 'Microsoft.Storage/storageAccounts@2021-04-01' existing = {
   name: storage2Name
 }
 
-// --- Diagnostic Settings ---
-
 resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'vm1-ds'
   scope: vmVNet1
@@ -113,7 +111,7 @@ resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'Administrative'
+        category: 'Syslog'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -135,7 +133,7 @@ resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'Administrative'
+        category: 'Syslog'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -157,7 +155,7 @@ resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageRead'
+        category: 'StorageWrite'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -179,7 +177,7 @@ resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageRead'
+        category: 'StorageWrite'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
