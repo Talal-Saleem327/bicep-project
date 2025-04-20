@@ -40,7 +40,7 @@ module vnet2 'modules/vnet.bicep' = {
 module storage 'modules/storage.bicep' = {
   name: 'storageDeploy'
   params: {
-    name: 'bicepstorage${uniqueString(resourceGroup().id)}'
+    name: 'bistorage${uniqueString(resourceGroup().id)}'
     location: location
   }
 }
