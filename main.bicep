@@ -1,11 +1,13 @@
 targetScope = 'resourceGroup'
 
-// Deploy VNet1
+param location string = resourceGroup().location
+
+// Create first virtual network with two subnets
 module vnet1 'modules/vnet.bicep' = {
-  name: 'vnet1Deployment'
+  name: 'vnet1Deploy'
   params: {
     name: 'VNet1'
-    location: resourceGroup().location
+    location: location
     subnets: [
       {
         name: 'infra'
@@ -19,76 +21,45 @@ module vnet1 'modules/vnet.bicep' = {
   }
 }
 
-// Deploy VNet2
+// Create second virtual network with one subnet
 module vnet2 'modules/vnet.bicep' = {
-  name: 'vnet2Deployment'
+  name: 'vnet2Deploy'
   params: {
     name: 'VNet2'
-    location: resourceGroup().location
+    location: location
     subnets: [
       {
-        name: 'vm'
+        name: 'web'
         prefix: '10.1.0.0/24'
       }
     ]
   }
 }
 
-// Peering between VNet1 and VNet2
-resource vnet1ToVnet2 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-11-01' = {
-  name: 'VNet1-to-VNet2'
-  parent: vnet1.outputs.vnet
-  properties: {
-    remoteVirtualNetwork: {
-      id: vnet2.outputs.vnet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: false
-    allowGatewayTransit: false
-    useRemoteGateways: false
-  }
-}
-
-resource vnet2ToVnet1 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-11-01' = {
-  name: 'VNet2-to-VNet1'
-  parent: vnet2.outputs.vnet
-  properties: {
-    remoteVirtualNetwork: {
-      id: vnet1.outputs.vnet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: false
-    allowGatewayTransit: false
-    useRemoteGateways: false
-  }
-}
-
-// Deploy Storage Account in VNet1
+// Storage Account
 module storage 'modules/storage.bicep' = {
-  name: 'storageDeployment'
+  name: 'storageDeploy'
   params: {
-    storageAccountName: 'uniquestorage12345'
-    location: resourceGroup().location
-    vnetName: 'VNet1'
-    subnetName: 'storage'
+    name: 'bicepstorage${uniqueString(resourceGroup().id)}'
+    location: location
   }
 }
 
-// Deploy VM in VNet2
-module vm 'modules/vm.bicep' = {
-  name: 'vmDeployment'
-  params: {
-    vmName: 'myVM'
-    location: resourceGroup().location
-    vnetName: 'VNet2'
-    subnetName: 'vm'
-  }
-}
-
-// Monitoring & Diagnostics
+// Log Analytics Workspace
 module monitor 'modules/monitor.bicep' = {
-  name: 'monitorDeployment'
+  name: 'monitorDeploy'
   params: {
-    location: resourceGroup().location
+    name: 'biceplogs${uniqueString(resourceGroup().id)}'
+    location: location
+  }
+}
+
+// VM in subnet of VNet1
+module vm 'modules/vm.bicep' = {
+  name: 'vmDeploy'
+  params: {
+    name: 'bicepVM'
+    location: location
+    subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', 'VNet1', 'infra')
   }
 }
