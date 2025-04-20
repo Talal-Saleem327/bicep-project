@@ -1,3 +1,5 @@
+targetScope = 'resource'
+
 param name string
 param logAnalyticsWorkspaceId string
 
