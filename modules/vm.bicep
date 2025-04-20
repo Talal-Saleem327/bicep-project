@@ -1,6 +1,8 @@
 param name string
 param location string
 param subnetId string
+@secure()
+param adminPassword string = 'Password1234!'
 
 resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
   name: '${name}-nic'
@@ -30,7 +32,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-07-01' = {
     osProfile: {
       computerName: name
       adminUsername: 'azureuser'
-      adminPassword: 'Password1234!'
+      adminPassword: adminPassword
     }
     storageProfile: {
       imageReference: {
