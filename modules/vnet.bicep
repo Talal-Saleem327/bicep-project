@@ -1,6 +1,7 @@
 param name string
 param location string
 param subnets array
+param addressPrefix string
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name
@@ -8,7 +9,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/16'
+        addressPrefix
       ]
     }
     subnets: [for subnet in subnets: {
