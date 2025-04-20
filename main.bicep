@@ -68,10 +68,13 @@ module vm2 'modules/vm.bicep' = {
 }
 
 // --- Storage Accounts ---
+var storage1Name = 'storvnet1${uniqueString('prefix1${resourceGroup().id}')}'
+var storage2Name = 'storvnet2${uniqueString('prefix2${resourceGroup().id}')}'
+
 module storage1 'modules/storage.bicep' = {
   name: 'storage1Deploy'
   params: {
-    name: 'storvnet1${uniqueString('prefix1${resourceGroup().id}')}' 
+    name: storage1Name
     location: location
   }
 }
@@ -79,61 +82,44 @@ module storage1 'modules/storage.bicep' = {
 module storage2 'modules/storage.bicep' = {
   name: 'storage2Deploy'
   params: {
-    name: 'storvnet2${uniqueString('prefix2${resourceGroup().id}')}' 
+    name: storage2Name
     location: location
   }
-}
-
-// --- Existing resource references for diagnostics ---
-resource vm1res 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
-  name: 'vmVNet1'
-}
-
-resource vm2res 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
-  name: 'vmVNet2'
-}
-
-resource stor1res 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: storage1.params.name
-}
-
-resource stor2res 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: storage2.params.name
 }
 
 // --- Diagnostic Settings ---
 module vm1Diag 'modules/diagnostic.bicep' = {
   name: 'diag-vm1'
-  scope: vm1res
   params: {
     name: 'vm1-ds'
+    targetResourceId: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet1')
     logAnalyticsWorkspaceId: monitor.outputs.workspaceId
   }
 }
 
 module vm2Diag 'modules/diagnostic.bicep' = {
   name: 'diag-vm2'
-  scope: vm2res
   params: {
     name: 'vm2-ds'
+    targetResourceId: resourceId('Microsoft.Compute/virtualMachines', 'vmVNet2')
     logAnalyticsWorkspaceId: monitor.outputs.workspaceId
   }
 }
 
 module storage1Diag 'modules/diagnostic.bicep' = {
   name: 'diag-storage1'
-  scope: stor1res
   params: {
     name: 'stor1-ds'
+    targetResourceId: resourceId('Microsoft.Storage/storageAccounts', storage1Name)
     logAnalyticsWorkspaceId: monitor.outputs.workspaceId
   }
 }
 
 module storage2Diag 'modules/diagnostic.bicep' = {
   name: 'diag-storage2'
-  scope: stor2res
   params: {
     name: 'stor2-ds'
+    targetResourceId: resourceId('Microsoft.Storage/storageAccounts', storage2Name)
     logAnalyticsWorkspaceId: monitor.outputs.workspaceId
   }
 }
