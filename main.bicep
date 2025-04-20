@@ -112,7 +112,7 @@ resource vm1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'VMPerformanceCounters'
+        category: 'GuestOS'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -135,7 +135,7 @@ resource vm2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'VMPerformanceCounters'
+        category: 'GuestOS'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -158,7 +158,7 @@ resource storage1Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageServicesLogs'
+        category: 'StorageBlobLogs'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
@@ -181,7 +181,7 @@ resource storage2Diag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview'
     workspaceId: monitor.outputs.workspaceId
     logs: [
       {
-        category: 'StorageServicesLogs'
+        category: 'StorageBlobLogs'
         enabled: true
         retentionPolicy: { enabled: false, days: 0 }
       }
